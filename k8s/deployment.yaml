@@ -24,10 +24,10 @@ spec:
             - containerPort: 8080
           resources:
             requests:
-              memory: "256Mi"
+              memory: "512Mi"
               cpu: "250m"
             limits:
-              memory: "512Mi"
+              memory: "1Gi"
               cpu: "500m"
           env:
             # ConfigMap에서 주입받는 환경변수
