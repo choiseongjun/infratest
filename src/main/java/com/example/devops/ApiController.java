@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/")
 public class ApiController {
 
     @Value("${app.message:Hello, World!}")
@@ -21,7 +20,7 @@ public class ApiController {
     @Value("${app.env:local}")
     private String appEnv;
 
-    @GetMapping
+    @GetMapping("/api/status")
     public Map<String, Object> getStatus() {
         Map<String, Object> status = new HashMap<>();
         status.put("message", appMessage);

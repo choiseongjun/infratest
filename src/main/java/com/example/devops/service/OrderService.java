@@ -137,4 +137,30 @@ public class OrderService {
 
         return statistics;
     }
+
+    // 5. Redis에 저장된 DLT(Dead Letter Topic) raw 메시지 목록 조회
+    public List<String> getDltRawMessages() {
+        java.util.Set<String> keys = redisTemplate.keys("order:dlt:*");
+        if (keys == null || keys.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        List<String> sortedKeys = new java.util.ArrayList<>(keys);
+        java.util.Collections.sort(sortedKeys);
+        
+        List<String> values = redisTemplate.opsForValue().multiGet(sortedKeys);
+        if (values == null) {
+            return java.util.Collections.emptyList();
+        }
+        return values.stream()
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    // 6. Redis DLT 목록 전체 삭제
+    public void clearDltMessages() {
+        java.util.Set<String> keys = redisTemplate.keys("order:dlt:*");
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
+    }
 }
