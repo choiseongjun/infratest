@@ -546,6 +546,14 @@
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
                     </button>
 
+                    <button class="btn btn-blue" onclick="sendBulkOrders(100)">
+                        <div>
+                            <span>대량 주문 100건 전송</span>
+                            <span class="btn-desc">100건의 주문을 연속으로 쏴서 카프카에 대량 데이터 인입</span>
+                        </div>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </button>
+
                     <button class="btn btn-purple" onclick="sendOrder(true)">
                         <div>
                             <span>DLQ 유도 주문 전송 (실패 테스트)</span>
@@ -561,6 +569,17 @@
                         </div>
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     </button>
+                    
+                    <div class="switch-container">
+                        <div class="switch-info">
+                            <span class="switch-label">지속적 트래픽 유발 (초당 10건)</span>
+                            <span class="btn-desc">활성화 시 초당 10건의 주문을 백엔드로 끊임없이 발송</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="trafficSwitch" onchange="toggleTraffic(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                     
                     <div class="switch-container">
                         <div class="switch-info">
@@ -645,6 +664,71 @@
         const API_BASE = '/api/orders';
         let isOffline = false;
         let dltCount = 0;
+        let trafficInterval = null;
+
+        // 대량 주문 전송 (100건)
+        async function sendBulkOrders(count) {
+            printConsole(`🚀 대량 주문 ${count}건 전송 시작...`, 'info');
+            let successCount = 0;
+            let failCount = 0;
+            
+            const promises = Array.from({ length: count }).map(async (_, index) => {
+                const products = ['Laptop', 'Smartphone', 'Tablet', 'Smartwatch', 'Headphones'];
+                const customers = ['Alice', 'Bob', 'Charlie', 'David', 'Eva'];
+                const payload = {
+                    productName: products[Math.floor(Math.random() * products.length)],
+                    quantity: Math.floor(Math.random() * 5) + 1,
+                    price: parseFloat((Math.random() * 1000 + 10).toFixed(2)),
+                    customerName: customers[Math.floor(Math.random() * customers.length)],
+                    status: 'CREATED'
+                };
+                try {
+                    const res = await fetch(API_BASE, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) successCount++;
+                    else failCount++;
+                } catch (e) {
+                    failCount++;
+                }
+            });
+            
+            await Promise.all(promises);
+            printConsole(`📊 대량 전송 완료: 성공 ${successCount}건 / 실패 ${failCount}건`, 'success');
+        }
+
+        // 지속 트래픽 유발
+        function toggleTraffic(checked) {
+            if (checked) {
+                printConsole(`🚦 지속적 대량 트래픽 유발 시작 (초당 10건)`, 'warning');
+                trafficInterval = setInterval(async () => {
+                    const products = ['Laptop', 'Smartphone', 'Tablet', 'Smartwatch', 'Headphones'];
+                    const customers = ['Alice', 'Bob', 'Charlie', 'David', 'Eva'];
+                    const payload = {
+                        productName: products[Math.floor(Math.random() * products.length)],
+                        quantity: Math.floor(Math.random() * 5) + 1,
+                        price: parseFloat((Math.random() * 1000 + 10).toFixed(2)),
+                        customerName: customers[Math.floor(Math.random() * customers.length)],
+                        status: 'CREATED'
+                    };
+                    try {
+                        fetch(API_BASE, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    } catch (e) {}
+                }, 100);
+            } else {
+                if (trafficInterval) {
+                    clearInterval(trafficInterval);
+                    trafficInterval = null;
+                }
+                printConsole(`🚦 지속적 대량 트래픽 유발 종료`, 'info');
+            }
+        }
 
         // 콘솔에 로그 한 줄 출력
         function printConsole(message, type = 'info') {
