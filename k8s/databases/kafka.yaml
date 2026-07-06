@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: kafka
-          image: bitnami/kafka:latest
+          image: bitnamilegacy/kafka:3.5.0-debian-11
           ports:
             - containerPort: 9092
             - containerPort: 9093
