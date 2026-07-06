@@ -18,7 +18,7 @@ spec:
       containers:
         - name: devops-api-container
           # Docker Hub Repository와 빌드할 이미지 태그 정보
-          image: choiseongjun/infratest:latest
+          image: jundevgo/infratest:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
