@@ -22,7 +22,7 @@ spec:
             - name: discovery.type
               value: "single-node"
             - name: OPENSEARCH_JAVA_OPTS
-              value: "-Xms384m -Xmx384m" # Minimal memory for local cluster
+              value: "-Xms512m -Xmx512m" # Minimal memory for local cluster
             - name: DISABLE_SECURITY_PLUGIN
               value: "true" # Disable SSL/Auth to simplify local Spring Boot integration
             - name: DISABLE_INSTALL_DEMO_CONFIG
@@ -30,10 +30,10 @@ spec:
           resources:
             requests:
               memory: "512Mi"
-              cpu: "100m"
+              cpu: "200m"
             limits:
-              memory: "768Mi"
-              cpu: "500m"
+              memory: "1Gi"
+              cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
