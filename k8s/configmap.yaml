@@ -5,4 +5,4 @@ metadata:
   namespace: default
 data:
   APP_ENV: "kubernetes-production"
-  APP_MESSAGE: "안녕하세요! 쿠버네티스 Pod에서 실행중인 Spring Boot API입니다!"
+  APP_MESSAGE: "Argo CD 자동 동기화 성공! 대시보드에서 초록색 불이 켜진걸 확인해 보세요! 🎉"
