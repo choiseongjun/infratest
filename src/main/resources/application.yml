@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: devops-api
+
+# Custom configuration variables (to be overridden by ConfigMap in K8s)
+app:
+  message: "${APP_MESSAGE:Hello from local dev environment!}"
+  env: "${APP_ENV:local}"
+
+# Spring Boot Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true  # Force-enables liveness/readiness probes (usually auto-detected in Kubernetes)

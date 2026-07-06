@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-practice-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/choiseongjun/infratest.git'
+    targetRevision: HEAD
+    path: k8s
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true      # Git에서 매니페스트 삭제 시 K8s에서도 자동 삭제
+      selfHeal: true   # K8s에서 수동 변경 시 Git 상태로 자동 복구
+    syncOptions:
+      - CreateNamespace=true
