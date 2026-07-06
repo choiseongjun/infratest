@@ -50,6 +50,15 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            # 데이터베이스 및 외부 서비스 연결 정보 추가
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: REDIS_HOST
+              value: "redis-service"
+            - name: KAFKA_HOST
+              value: "kafka-service"
+            - name: OPENSEARCH_HOST
+              value: "opensearch-service"
           # Spring Boot Actuator의 Health Endpoint를 활용한 프로브 설정
           livenessProbe:
             httpGet:

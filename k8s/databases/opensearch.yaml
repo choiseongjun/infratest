@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensearch
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensearch
+  template:
+    metadata:
+      labels:
+        app: opensearch
+    spec:
+      containers:
+        - name: opensearch
+          image: opensearchproject/opensearch:2.11.0
+          ports:
+            - containerPort: 9200
+          env:
+            - name: discovery.type
+              value: "single-node"
+            - name: OPENSEARCH_JAVA_OPTS
+              value: "-Xms384m -Xmx384m" # Minimal memory for local cluster
+            - name: DISABLE_SECURITY_PLUGIN
+              value: "true" # Disable SSL/Auth to simplify local Spring Boot integration
+            - name: DISABLE_INSTALL_DEMO_CONFIG
+              value: "true"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "100m"
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opensearch-service
+  namespace: default
+spec:
+  ports:
+    - port: 9200
+      targetPort: 9200
+  selector:
+    app: opensearch

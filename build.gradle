@@ -22,6 +22,16 @@ dependencies {
     // Actuator for health checks (liveness/readiness probes)
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // Spring Data JPA for PostgreSQL
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Spring Data Redis for Caching
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Spring Kafka for Message Broker
+    implementation 'org.springframework.kafka:spring-kafka'
+
     // Spring Boot Starter Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
