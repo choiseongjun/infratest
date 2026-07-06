@@ -25,10 +25,10 @@ spec:
           resources:
             requests:
               memory: "512Mi"
-              cpu: "250m"
+              cpu: "500m"
             limits:
               memory: "1Gi"
-              cpu: "500m"
+              cpu: "1000m"
           env:
             # ConfigMap에서 주입받는 환경변수
             - name: APP_ENV
@@ -64,11 +64,11 @@ spec:
             httpGet:
               path: /actuator/health/liveness
               port: 8080
-            initialDelaySeconds: 60
+            initialDelaySeconds: 90
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: 8080
-            initialDelaySeconds: 70
+            initialDelaySeconds: 100
             periodSeconds: 10
